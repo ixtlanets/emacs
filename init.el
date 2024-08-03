@@ -1,12 +1,6 @@
 (defvar nik/default-font-size 160)
 (defvar nik/default-variable-font-size 160)
 
-;; Make frame transparency overridable
-(defvar nik/frame-transparency '(98 . 98))
-
-;; Set frame transparency
-(set-frame-parameter (selected-frame) 'alpha nik/frame-transparency)
-(add-to-list 'default-frame-alist `(alpha . ,nik/frame-transparency))
 (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
