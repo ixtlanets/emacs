@@ -19,7 +19,7 @@
 (set-face-attribute 'variable-pitch nil :font "Cantarell" :height nik/default-variable-font-size :weight 'regular)
 
 (use-package doom-themes
-  :init (load-theme 'doom-one t))
+  :init (load-theme 'doom-tokyo-night t))
 
 (use-package all-the-icons)
 
@@ -38,6 +38,11 @@
   :config
   ;; Enable Evil mode
   (evil-mode 1))
+
+(use-package evil-collection
+  :after evil
+  :config
+  (evil-collection-init))
 
 (use-package which-key
   :init (which-key-mode)
@@ -205,3 +210,51 @@
     ;; Dynamic scoping to the rescue
     (let ((org-confirm-babel-evaluate nil))
       (org-babel-tangle))))
+
+;;;; `ediff'
+(use-package ediff
+  :ensure nil
+  :commands (ediff-buffers ediff-files ediff-buffers3 ediff-files3)
+  :init
+  (setq ediff-split-window-function 'split-window-horizontally)
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+  :config
+  (setq ediff-keep-variants nil)
+  (setq ediff-make-buffers-readonly-at-startup nil)
+  (setq ediff-merge-revisions-with-ancestor t)
+  (setq ediff-show-clashes-only t))
+
+;;;; `project'
+(use-package project
+  :ensure nil
+  :bind
+  (("C-x p ." . project-dired)
+   ("C-x p C-g" . keyboard-quit)
+   ("C-x p <return>" . project-dired)
+   ("C-x p <delete>" . project-forget-project))
+  :config
+  (setopt project-switch-commands
+          '((project-find-file "Find file")
+            (project-find-regexp "Find regexp")
+            (project-find-dir "Find directory")
+            (project-dired "Root dired")
+            (project-vc-dir "VC-Dir")
+            (project-shell "Shell")
+            (keyboard-quit "Quit")))
+  (setq project-vc-extra-root-markers '(".project")) ; Emacs 29
+  (setq project-key-prompt-style t) ; Emacs 30
+
+  (advice-add #'project-switch-project :after #'prot-common-clear-minibuffer-message))
+
+(use-package magit
+  :ensure t
+  :bind ("C-c g" . magit-status)
+  :init
+  (setq magit-define-global-key-bindings nil)
+  (setq magit-section-visibility-indicator '("⮧"))
+  :config
+  (setq git-commit-summary-max-length 50)
+  (setq git-commit-style-convention-checks '(non-empty-second-line))
+  (setq magit-diff-refine-hunk t)
+  (setq magit-repository-directories
+        '(("~/pro" . 1))))

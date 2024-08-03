@@ -131,7 +131,7 @@ Set theme
 
 #+begin_src emacs-lisp :tangle "init.el"
   (use-package doom-themes
-    :init (load-theme 'doom-one t))
+    :init (load-theme 'doom-tokyo-night t))
 #+end_src
 
 All the icons
@@ -164,6 +164,11 @@ I personally prefer Vim keybindings, so let's use it.
     :config
     ;; Enable Evil mode
     (evil-mode 1))
+
+  (use-package evil-collection
+    :after evil
+    :config
+    (evil-collection-init))
 
 #+end_src
 
@@ -347,3 +352,63 @@ I personally prefer Vim keybindings, so let's use it.
 
 #+end_src
 
+* Git specific settings
+** Ediff specific settings
+#+begin_src emacs-lisp :tangle "init.el"
+  ;;;; `ediff'
+  (use-package ediff
+    :ensure nil
+    :commands (ediff-buffers ediff-files ediff-buffers3 ediff-files3)
+    :init
+    (setq ediff-split-window-function 'split-window-horizontally)
+    (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+    :config
+    (setq ediff-keep-variants nil)
+    (setq ediff-make-buffers-readonly-at-startup nil)
+    (setq ediff-merge-revisions-with-ancestor t)
+    (setq ediff-show-clashes-only t))
+#+end_src
+
+** Project.el settings
+#+begin_src emacs-lisp :tangle "init.el"
+  ;;;; `project'
+  (use-package project
+    :ensure nil
+    :bind
+    (("C-x p ." . project-dired)
+     ("C-x p C-g" . keyboard-quit)
+     ("C-x p <return>" . project-dired)
+     ("C-x p <delete>" . project-forget-project))
+    :config
+    (setopt project-switch-commands
+            '((project-find-file "Find file")
+              (project-find-regexp "Find regexp")
+              (project-find-dir "Find directory")
+              (project-dired "Root dired")
+              (project-vc-dir "VC-Dir")
+              (project-shell "Shell")
+              (keyboard-quit "Quit")))
+    (setq project-vc-extra-root-markers '(".project")) ; Emacs 29
+    (setq project-key-prompt-style t) ; Emacs 30
+
+    (advice-add #'project-switch-project :after #'prot-common-clear-minibuffer-message))
+
+#+end_src
+
+** Magit
+
+#+begin_src emacs-lisp :tangle "init.el"
+  (use-package magit
+    :ensure t
+    :bind ("C-c g" . magit-status)
+    :init
+    (setq magit-define-global-key-bindings nil)
+    (setq magit-section-visibility-indicator '("⮧"))
+    :config
+    (setq git-commit-summary-max-length 50)
+    (setq git-commit-style-convention-checks '(non-empty-second-line))
+    (setq magit-diff-refine-hunk t)
+    (setq magit-repository-directories
+          '(("~/pro" . 1))))
+
+#+end_src
