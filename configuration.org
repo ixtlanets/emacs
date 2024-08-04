@@ -101,8 +101,8 @@ I prefer to display relative line numbers
 * Styling of my emacs
 
 #+begin_src emacs-lisp :tangle "init.el"
-  (defvar nik/default-font-size 160)
-  (defvar nik/default-variable-font-size 160)
+  (defvar nik/default-font-size 140)
+  (defvar nik/default-variable-font-size 140)
 
   (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
   (add-to-list 'default-frame-alist '(fullscreen . maximized))
