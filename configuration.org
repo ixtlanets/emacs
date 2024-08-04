@@ -219,9 +219,11 @@ I personally prefer Vim keybindings, so let's use it.
   (defun nik/org-mode-setup ()
     (org-indent-mode)
     (variable-pitch-mode 1)
-    (visual-line-mode 1))
+    (visual-line-mode 1)
+    (org-bullets-mode 1))
 
   (use-package org
+    :bind ("C-c c" . org-capture)
     :hook (org-mode . nik/org-mode-setup)
     :config
     (setq org-ellipsis " ▾")
