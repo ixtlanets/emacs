@@ -1,5 +1,24 @@
-(defvar nik/default-font-size 160)
-(defvar nik/default-variable-font-size 160)
+;;;; Packages
+
+(add-hook 'package-menu-mode-hook #'hl-line-mode)
+
+;; Also read: <https://protesilaos.com/codelog/2022-05-13-emacs-elpa-devel/>
+(setq package-archives
+      '(("gnu-elpa" . "https://elpa.gnu.org/packages/")
+        ("gnu-elpa-devel" . "https://elpa.gnu.org/devel/")
+        ("nongnu" . "https://elpa.nongnu.org/nongnu/")
+        ("melpa" . "https://melpa.org/packages/")))
+
+;; Highest number gets priority (what is not mentioned has priority 0)
+(setq package-archive-priorities
+      '(("gnu-elpa" . 3)
+        ("melpa" . 2)
+        ("nongnu" . 1)))
+
+(setq package-install-upgrade-built-in nil)
+
+(defvar nik/default-font-size 140)
+(defvar nik/default-variable-font-size 140)
 
 (set-frame-parameter (selected-frame) 'fullscreen 'maximized)
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
@@ -80,9 +99,26 @@
 (defun nik/org-mode-setup ()
   (org-indent-mode)
   (variable-pitch-mode 1)
-  (visual-line-mode 1))
+  (visual-line-mode 1)
+  (org-bullets-mode 1))
+
+(defun nik/ensure-heading-exists (file headline)
+  "Ensure that a heading exists in the specified file. If the heading does not exist, it is created."
+  (save-excursion
+    (with-current-buffer (find-file-noselect file)
+      (org-with-wide-buffer
+       (goto-char (point-min))
+       (unless (search-forward-regexp (format "^*\\s-+News" ) nil t)
+         (goto-char (point-max))
+         (insert "* News\n"))
+       (unless (re-search-forward (format "^**\\s-+%s$" headline) nil t)
+         (goto-char (point-max))
+         (insert (format "** %s\n" headline)))
+       (save-buffer)))))
+
 
 (use-package org
+  :bind ("C-c c" . org-capture)
   :hook (org-mode . nik/org-mode-setup)
   :config
   (setq org-ellipsis " ▾")
@@ -159,33 +195,38 @@
             (todo "CANC"
                   ((org-agenda-overriding-header "Cancelled Projects")
                    (org-agenda-files org-agenda-files)))))))
+
   (setq org-capture-templates
-        `(("t" "Tasks / Projects")
-          ("tt" "Task" entry (file+olp "~/org/inbox.org" "Tasks")
-           "* TODO %?\n  %U\n  %a\n  %i" :empty-lines 1)
+      `(("t" "Time-sensitive task" entry
+         (file+headline "inbox.org" "Tasks with a date")
+         ,(concat "* TODO %^{Title} %^g\n"
+                  "%^{How time sensitive it is|SCHEDULED|DEADLINE}: %^t\n"
+                  ":PROPERTIES:\n"
+                  ":CAPTURED: %U\n"
+                  ":END:\n\n"
+                  "%?")
+         :empty-lines-after 1)
+        ("n" "News for scouts" plain
+         (function
+          (lambda ()
+            (let ((headline (format-time-string "%Y-%m-%d" (org-read-date nil t "+mon")))
+                  (org-file (expand-file-name "gr.org" org-directory)))
+              (nik/ensure-heading-exists org-file headline)
+              (find-file org-file)
+              (goto-char (point-min))
+              (re-search-forward (format "^*\\s-+News\\s-*$"))
+              (re-search-forward (format "^**\\s-+%s$" headline))
+              (org-end-of-subtree t))))
+         ,(concat "*** %^{Title}\n"
+                  ":PROPERTIES:\n"
+                  ":CAPTURED: %U\n"
+                  ":END:\n\n"
+                  "Link: %^{Link to news source}\n"
+                  "%?")
+         :empty-lines-after 2)
+        ))
 
-          ("j" "Journal Entries")
-          ("jj" "Journal" entry
-           (file+olp+datetree "~/org/journal.org")
-           "\n* %<%I:%M %p> - Journal :journal:\n\n%?\n\n"
-           ;; ,(dw/read-file-as-string "~/Notes/Templates/Daily.org")
-           :clock-in :clock-resume
-           :empty-lines 1)
-          ("jm" "Meeting" entry
-           (file+olp+datetree "~/org/journal.org")
-           "* %<%I:%M %p> - %a :meetings:\n\n%?\n\n"
-           :clock-in :clock-resume
-           :empty-lines 1)
 
-          ("w" "Workflows")
-          ("we" "Checking Email" entry (file+olp+datetree "~/org/journal.org")
-           "* Checking Email :email:\n\n%?" :clock-in :clock-resume :empty-lines 1)
-
-          ("m" "Metrics Capture")
-          ("mw" "Weight" table-line (file+headline "~/org/metrics.org" "Weight")
-           "| %U | %^{Weight} | %^{Notes} |" :kill-buffer t)))
-  (define-key global-map (kbd "C-c j")
-              (lambda () (interactive) (org-capture nil "jj")))
 
   (nik/org-font-setup))
 
@@ -252,3 +293,13 @@
   (setq magit-diff-refine-hunk t)
   (setq magit-repository-directories
         '(("~/pro" . 1))))
+
+(use-package password-store
+  :ensure t
+  :bind ("C-c k" . password-store-copy)
+  :config
+  (setq password-store-time-before-clipboard-restore 30))
+
+(use-package pass
+  :ensure t
+  :commands (pass))
