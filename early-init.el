@@ -60,6 +60,9 @@
                   file-name-handler-alist prot-emacs--file-name-handler-alist
                   vc-handled-backends prot-emacs--vc-handled-backends)))
 
+;; disable backup files
+(setq make-backup-files nil)
+
 ;; Initialise installed packages at this early stage, by using the
 ;; available cache.  I had tried a setup with this set to nil in the
 ;; early-init.el, but (i) it ended up being slower and (ii) various

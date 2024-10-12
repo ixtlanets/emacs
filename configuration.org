@@ -89,6 +89,11 @@ I prefer to display relative line numbers
 
 
 #+begin_src emacs-lisp :tangle "early-init.el"
+  ;; disable backup files
+  (setq make-backup-files nil)
+#+end_src
+
+#+begin_src emacs-lisp :tangle "early-init.el"
   ;; Initialise installed packages at this early stage, by using the
   ;; available cache.  I had tried a setup with this set to nil in the
   ;; early-init.el, but (i) it ended up being slower and (ii) various
