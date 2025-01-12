@@ -39,24 +39,25 @@ or =C-c C-v C-t= keys pressed.
 I prefer to display relative line numbers
 
 #+begin_src emacs-lisp :tangle "early-init.el"
-  ;; Enable global display of line numbers
-  (global-display-line-numbers-mode t)
+    ;; Enable global display of line numbers
+    (global-display-line-numbers-mode t)
 
-  ;; Set line numbers to be relative
-  (setq display-line-numbers-type 'relative)
+    ;; Set line numbers to be relative
+    (setq display-line-numbers-type 'relative)
 
-  ;; Ensure relative line numbers are used in all buffers
-  (add-hook 'prog-mode-hook (lambda () (setq display-line-numbers 'relative)))
-  (add-hook 'text-mode-hook (lambda () (setq display-line-numbers 'relative)))
+    ;; Ensure relative line numbers are used in all buffers
+    (add-hook 'prog-mode-hook (lambda () (setq display-line-numbers 'relative)))
+    (add-hook 'text-mode-hook (lambda () (setq display-line-numbers 'relative)))
 
-  ;; Disable line numbers for some modes
-  (dolist (mode '(org-mode-hook
-                  term-mode-hook
-                  vterm-mode-hook
-                  shell-mode-hook
-                  treemacs-mode-hook
-                  eshell-mode-hook))
-    (add-hook mode (lambda () (display-line-numbers-mode 0))))
+    ;; Disable line numbers for some modes
+    (dolist (mode '(org-mode-hook
+                    term-mode-hook
+                    vterm-mode-hook
+                    shell-mode-hook
+                    treemacs-mode-hook
+                    eshell-mode-hook
+  		  pdf-view-mode))
+      (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 #+end_src
 
@@ -206,15 +207,36 @@ I personally prefer Vim keybindings, so let's use it.
 
 * Counsel 
 #+begin_src emacs-lisp :tangle "init.el"
-  (use-package counsel
-    :config
-    (counsel-mode 1))
+    (use-package counsel
+      :config
+      (counsel-mode 1))
 
 #+end_src
+* Vertico
+#+begin_src emacs-lisp :tangle "init.el"
+      (use-package vertico
+        :config
+        (vertico-mode 1))
+#+end_src
+* Marginalia
+#+begin_src emacs-lisp :tangle "init.el"
+    (use-package marginalia
+      :config
+      (marginalia-mode 1))
+#+end_src
 
+* Global key bindings
+#+begin_src emacs-lisp :tangle "init.el"
+  (global-set-key (kbd "C-x b") 'counsel-switch-buffer)
+  (global-set-key (kbd "C-x /") 'counsel-rg)
+  (global-set-key (kbd "C-x g") 'magit)
+#+end_src
 * Org mode
 
 #+begin_src emacs-lisp :tangle "init.el"
+
+;; yank-media--registered-handlers org mode
+  
   ;; Org mode customizations
   (defun nik/org-font-setup ()
     ;; Replace list hyphen with dot
@@ -284,7 +306,7 @@ I personally prefer Vim keybindings, so let's use it.
             "~/org/home.org"))
     (setq org-archive-location "~/org/archive.org::* From %s")
     (setq org-todo-keywords
-          '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")
+          '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(e)")
             (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
     (setq org-refile-targets
           '(("archive.org" :maxlevel . 1)
@@ -365,11 +387,12 @@ I personally prefer Vim keybindings, so let's use it.
                 (re-search-forward (format "^*\\s-+News\\s-*$"))
                 (re-search-forward (format "^**\\s-+%s$" headline))
                 (org-end-of-subtree t))))
-           ,(concat "*** %^{Title}\n"
+           ,(concat "*** [[%^{Link to news source}][%^{Title}]]\n"
                     ":PROPERTIES:\n"
                     ":CAPTURED: %U\n"
                     ":END:\n\n"
-                    "Link: %^{Link to news source}\n"
+  		  "*Whatsapp & FB*:\n%^{Text for Whatsapp}\n------\n"
+  		  "*Twitter*:\n%^{Text for Twitter}\n"
                     "%?")
            :empty-lines-after 2)
           ))
@@ -378,6 +401,25 @@ I personally prefer Vim keybindings, so let's use it.
 
     (nik/org-font-setup))
 
+(with-eval-after-load 'org
+  (setq yank-media--registered-handlers '(("image/.*" . #'org-mode--image-yank-handler))))
+
+;; org mode image yank handler
+(yank-media-handler "image/.*" #'org-mode--image-yank-handler)
+
+;; org-mode insert image as file link from the clipboard
+(defun org-mode--image-yank-handler (type image)
+  (let ((file (read-file-name (format "Save %s image to: " type))))
+    (when (file-directory-p file)
+      (user-error "%s is a directory"))
+    (when (and (file-exists-p file)
+               (not (yes-or-no-p (format "%s exists; overwrite?" file))))
+      (user-error "%s exists"))
+    (with-temp-buffer
+      (set-buffer-multibyte nil)
+      (insert image)
+      (write-region (point-min) (point-max) file))
+    (insert (format "[[file:%s]]\n" (file-relative-name file)))))
   (require 'org-tempo)
 
 

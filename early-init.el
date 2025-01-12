@@ -33,7 +33,8 @@
                 vterm-mode-hook
                 shell-mode-hook
                 treemacs-mode-hook
-                eshell-mode-hook))
+                eshell-mode-hook
+		  pdf-view-mode))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 ;; Temporarily increase the garbage collection threshold.  These
