@@ -39,25 +39,25 @@ or =C-c C-v C-t= keys pressed.
 I prefer to display relative line numbers
 
 #+begin_src emacs-lisp :tangle "early-init.el"
-    ;; Enable global display of line numbers
-    (global-display-line-numbers-mode t)
+  ;; Enable global display of line numbers
+  (global-display-line-numbers-mode t)
 
-    ;; Set line numbers to be relative
-    (setq display-line-numbers-type 'relative)
+  ;; Set line numbers to be relative
+  (setq display-line-numbers-type 'relative)
 
-    ;; Ensure relative line numbers are used in all buffers
-    (add-hook 'prog-mode-hook (lambda () (setq display-line-numbers 'relative)))
-    (add-hook 'text-mode-hook (lambda () (setq display-line-numbers 'relative)))
+  ;; Ensure relative line numbers are used in all buffers
+  (add-hook 'prog-mode-hook (lambda () (setq display-line-numbers 'relative)))
+  (add-hook 'text-mode-hook (lambda () (setq display-line-numbers 'relative)))
 
-    ;; Disable line numbers for some modes
-    (dolist (mode '(org-mode-hook
-                    term-mode-hook
-                    vterm-mode-hook
-                    shell-mode-hook
-                    treemacs-mode-hook
-                    eshell-mode-hook
-  		  pdf-view-mode))
-      (add-hook mode (lambda () (display-line-numbers-mode 0))))
+  ;; Disable line numbers for some modes
+  (dolist (mode '(org-mode-hook
+                  term-mode-hook
+                  vterm-mode-hook
+                  shell-mode-hook
+                  treemacs-mode-hook
+                  eshell-mode-hook
+  		pdf-view-mode))
+    (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 #+end_src
 
@@ -107,24 +107,24 @@ I prefer to display relative line numbers
 * Package.el related config
 
 #+begin_src emacs-lisp :tangle "init.el"
-;;;; Packages
+  ;;;; Packages
 
-(add-hook 'package-menu-mode-hook #'hl-line-mode)
+  (add-hook 'package-menu-mode-hook #'hl-line-mode)
 
-;; Also read: <https://protesilaos.com/codelog/2022-05-13-emacs-elpa-devel/>
-(setq package-archives
-      '(("gnu-elpa" . "https://elpa.gnu.org/packages/")
-        ("gnu-elpa-devel" . "https://elpa.gnu.org/devel/")
-        ("nongnu" . "https://elpa.nongnu.org/nongnu/")
-        ("melpa" . "https://melpa.org/packages/")))
+  ;; Also read: <https://protesilaos.com/codelog/2022-05-13-emacs-elpa-devel/>
+  (setq package-archives
+        '(("gnu-elpa" . "https://elpa.gnu.org/packages/")
+          ("gnu-elpa-devel" . "https://elpa.gnu.org/devel/")
+          ("nongnu" . "https://elpa.nongnu.org/nongnu/")
+          ("melpa" . "https://melpa.org/packages/")))
 
-;; Highest number gets priority (what is not mentioned has priority 0)
-(setq package-archive-priorities
-      '(("gnu-elpa" . 3)
-        ("melpa" . 2)
-        ("nongnu" . 1)))
+  ;; Highest number gets priority (what is not mentioned has priority 0)
+  (setq package-archive-priorities
+        '(("gnu-elpa" . 3)
+          ("melpa" . 2)
+          ("nongnu" . 1)))
 
-(setq package-install-upgrade-built-in nil)
+  (setq package-install-upgrade-built-in nil)
 #+end_src
 
 * Styling of my emacs
@@ -154,19 +154,23 @@ Set theme
 
 #+begin_src emacs-lisp :tangle "init.el"
   (use-package doom-themes
+    :ensure t
     :init (load-theme 'doom-tokyo-night t))
 #+end_src
 
 All the icons
 
 #+begin_src emacs-lisp :tangle "init.el"
-  (use-package all-the-icons)
+  (use-package all-the-icons
+    :ensure t
+    )
 #+end_src
 
 Modeline
 
 #+begin_src emacs-lisp :tangle "init.el"
   (use-package doom-modeline
+    :ensure t
     :init (doom-modeline-mode 1)
     :custom ((doom-modeline-height 15)))
 #+end_src
@@ -199,6 +203,7 @@ I personally prefer Vim keybindings, so let's use it.
 
 #+begin_src emacs-lisp :tangle "init.el"
   (use-package which-key
+    :ensure t
     :init (which-key-mode)
     :diminish which-key-mode
     :config
@@ -207,27 +212,31 @@ I personally prefer Vim keybindings, so let's use it.
 
 * Counsel 
 #+begin_src emacs-lisp :tangle "init.el"
-    (use-package counsel
-      :config
-      (counsel-mode 1))
+  (use-package counsel
+    :ensure t
+    :config
+    (counsel-mode 1))
 
 #+end_src
 * Vertico
 #+begin_src emacs-lisp :tangle "init.el"
-      (use-package vertico
-        :config
-        (vertico-mode 1))
+  (use-package vertico
+    :ensure t
+    :config
+    (vertico-mode 1))
 #+end_src
 * Marginalia
 #+begin_src emacs-lisp :tangle "init.el"
-    (use-package marginalia
-      :config
-      (marginalia-mode 1))
+  (use-package marginalia
+    :ensure t
+    :config
+    (marginalia-mode 1))
 #+end_src
 
 * Global key bindings
 #+begin_src emacs-lisp :tangle "init.el"
   (global-set-key (kbd "C-x b") 'counsel-switch-buffer)
+  (global-set-key (kbd "C-x C-p") 'counsel-git)
   (global-set-key (kbd "C-x /") 'counsel-rg)
   (global-set-key (kbd "C-x g") 'magit)
 #+end_src
@@ -235,8 +244,8 @@ I personally prefer Vim keybindings, so let's use it.
 
 #+begin_src emacs-lisp :tangle "init.el"
 
-;; yank-media--registered-handlers org mode
-  
+  ;; yank-media--registered-handlers org mode
+
   ;; Org mode customizations
   (defun nik/org-font-setup ()
     ;; Replace list hyphen with dot
@@ -288,6 +297,7 @@ I personally prefer Vim keybindings, so let's use it.
 
 
   (use-package org
+    :ensure t
     :bind ("C-c c" . org-capture)
     :hook (org-mode . nik/org-mode-setup)
     :config
@@ -367,59 +377,59 @@ I personally prefer Vim keybindings, so let's use it.
                      (org-agenda-files org-agenda-files)))))))
 
     (setq org-capture-templates
-        `(("t" "Time-sensitive task" entry
-           (file+headline "inbox.org" "Tasks with a date")
-           ,(concat "* TODO %^{Title} %^g\n"
-                    "%^{How time sensitive it is|SCHEDULED|DEADLINE}: %^t\n"
-                    ":PROPERTIES:\n"
-                    ":CAPTURED: %U\n"
-                    ":END:\n\n"
-                    "%?")
-           :empty-lines-after 1)
-          ("n" "News for scouts" plain
-           (function
-            (lambda ()
-              (let ((headline (format-time-string "%Y-%m-%d" (org-read-date nil t "+mon")))
-                    (org-file (expand-file-name "gr.org" org-directory)))
-                (nik/ensure-heading-exists org-file headline)
-                (find-file org-file)
-                (goto-char (point-min))
-                (re-search-forward (format "^*\\s-+News\\s-*$"))
-                (re-search-forward (format "^**\\s-+%s$" headline))
-                (org-end-of-subtree t))))
-           ,(concat "*** [[%^{Link to news source}][%^{Title}]]\n"
-                    ":PROPERTIES:\n"
-                    ":CAPTURED: %U\n"
-                    ":END:\n\n"
-  		  "*Whatsapp & FB*:\n%^{Text for Whatsapp}\n------\n"
-  		  "*Twitter*:\n%^{Text for Twitter}\n"
-                    "%?")
-           :empty-lines-after 2)
-          ))
+          `(("t" "Time-sensitive task" entry
+             (file+headline "inbox.org" "Tasks with a date")
+             ,(concat "* TODO %^{Title} %^g\n"
+                      "%^{How time sensitive it is|SCHEDULED|DEADLINE}: %^t\n"
+                      ":PROPERTIES:\n"
+                      ":CAPTURED: %U\n"
+                      ":END:\n\n"
+                      "%?")
+             :empty-lines-after 1)
+            ("n" "News for scouts" plain
+             (function
+              (lambda ()
+                (let ((headline (format-time-string "%Y-%m-%d" (org-read-date nil t "+mon")))
+                      (org-file (expand-file-name "gr.org" org-directory)))
+                  (nik/ensure-heading-exists org-file headline)
+                  (find-file org-file)
+                  (goto-char (point-min))
+                  (re-search-forward (format "^*\\s-+News\\s-*$"))
+                  (re-search-forward (format "^**\\s-+%s$" headline))
+                  (org-end-of-subtree t))))
+             ,(concat "*** [[%^{Link to news source}][%^{Title}]]\n"
+                      ":PROPERTIES:\n"
+                      ":CAPTURED: %U\n"
+                      ":END:\n\n"
+    		    "*Whatsapp & FB*:\n%^{Text for Whatsapp}\n------\n"
+    		    "*Twitter*:\n%^{Text for Twitter}\n"
+                      "%?")
+             :empty-lines-after 2)
+            ))
 
 
 
     (nik/org-font-setup))
 
-(with-eval-after-load 'org
-  (setq yank-media--registered-handlers '(("image/.*" . #'org-mode--image-yank-handler))))
+  (with-eval-after-load 'org
+    (setq yank-media--registered-handlers '(("image/.*" . #'org-mode--image-yank-handler))))
 
-;; org mode image yank handler
-(yank-media-handler "image/.*" #'org-mode--image-yank-handler)
+  ;; org mode image yank handler
+  (yank-media-handler "image/.*" #'org-mode--image-yank-handler)
 
-;; org-mode insert image as file link from the clipboard
-(defun org-mode--image-yank-handler (type image)
-  (let ((file (read-file-name (format "Save %s image to: " type))))
-    (when (file-directory-p file)
-      (user-error "%s is a directory"))
-    (when (and (file-exists-p file)
-               (not (yes-or-no-p (format "%s exists; overwrite?" file))))
-      (user-error "%s exists"))
-    (with-temp-buffer
-      (set-buffer-multibyte nil)
-      (insert image)
-      (write-region (point-min) (point-max) file))
-    (insert (format "[[file:%s]]\n" (file-relative-name file)))))
+  ;; org-mode insert image as file link from the clipboard
+  (defun org-mode--image-yank-handler (type image)
+    (let ((file (read-file-name (format "Save %s image to: " type))))
+      (when (file-directory-p file)
+        (user-error "%s is a directory"))
+      (when (and (file-exists-p file)
+                 (not (yes-or-no-p (format "%s exists; overwrite?" file))))
+        (user-error "%s exists"))
+      (with-temp-buffer
+        (set-buffer-multibyte nil)
+        (insert image)
+        (write-region (point-min) (point-max) file))
+      (insert (format "[[file:%s]]\n" (file-relative-name file)))))
   (require 'org-tempo)
 
 
@@ -481,6 +491,25 @@ I personally prefer Vim keybindings, so let's use it.
 
 #+end_src
 
+** Dev related
+*** Nix mode
+#+begin_src emacs-lisp :tangle "init.el"
+  (use-package nix-mode
+    :ensure t
+    :mode "\\.nix\\'")
+#+end_src
+
+*** Treesitter
+#+begin_src emacs-lisp :tangle "init.el"
+  (use-package treesit-auto
+    :ensure t
+    :custom
+    (treesit-auto-install 'prompt)
+    :config
+    (treesit-auto-add-to-auto-mode-alist 'all)
+    (global-treesit-auto-mode))
+
+#+end_src
 ** Magit
 
 #+begin_src emacs-lisp :tangle "init.el"
