@@ -57,7 +57,7 @@ I prefer to display relative line numbers
                   treemacs-mode-hook
                   eshell-mode-hook
   		pdf-view-mode))
-    (add-hook mode (lambda () (display-line-numbers-mode 0))))
+    (add-hook mode (lambda () (display-line-numbers-mode -1))))
 
 #+end_src
 
@@ -193,6 +193,7 @@ I personally prefer Vim keybindings, so let's use it.
     (evil-mode 1))
 
   (use-package evil-collection
+  :ensure t
     :after evil
     :config
     (evil-collection-init))
@@ -401,8 +402,8 @@ I personally prefer Vim keybindings, so let's use it.
                       ":PROPERTIES:\n"
                       ":CAPTURED: %U\n"
                       ":END:\n\n"
-    		    "*Whatsapp & FB*:\n%^{Text for Whatsapp}\n------\n"
-    		    "*Twitter*:\n%^{Text for Twitter}\n"
+                      "*Whatsapp & FB*:\n%^{Text for Whatsapp}\n------\n"
+                      "*Twitter*:\n%^{Text for Twitter}\n"
                       "%?")
              :empty-lines-after 2)
             ))
@@ -410,6 +411,9 @@ I personally prefer Vim keybindings, so let's use it.
 
 
     (nik/org-font-setup))
+  (use-package org-bullets
+    :ensure t
+    :after org)
 
   (with-eval-after-load 'org
     (setq yank-media--registered-handlers '(("image/.*" . #'org-mode--image-yank-handler))))

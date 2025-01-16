@@ -34,8 +34,8 @@
                 shell-mode-hook
                 treemacs-mode-hook
                 eshell-mode-hook
-		pdf-view-mode))
-  (add-hook mode (lambda () (display-line-numbers-mode 0))))
+  	      pdf-view-mode))
+  (add-hook mode (lambda () (display-line-numbers-mode -1))))
 
 ;; Temporarily increase the garbage collection threshold.  These
 ;; changes help shave off about half a second of startup time.  The

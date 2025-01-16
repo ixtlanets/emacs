@@ -57,6 +57,7 @@
   (evil-mode 1))
 
 (use-package evil-collection
+:ensure t
   :after evil
   :config
   (evil-collection-init))
@@ -245,8 +246,8 @@
                     ":PROPERTIES:\n"
                     ":CAPTURED: %U\n"
                     ":END:\n\n"
-  		    "*Whatsapp & FB*:\n%^{Text for Whatsapp}\n------\n"
-  		    "*Twitter*:\n%^{Text for Twitter}\n"
+                    "*Whatsapp & FB*:\n%^{Text for Whatsapp}\n------\n"
+                    "*Twitter*:\n%^{Text for Twitter}\n"
                     "%?")
            :empty-lines-after 2)
           ))
@@ -254,6 +255,9 @@
 
 
   (nik/org-font-setup))
+(use-package org-bullets
+  :ensure t
+  :after org)
 
 (with-eval-after-load 'org
   (setq yank-media--registered-handlers '(("image/.*" . #'org-mode--image-yank-handler))))
@@ -359,3 +363,16 @@
 (use-package pass
   :ensure t
   :commands (pass))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(org-bullets which-key vertico treesit-auto pass nix-mode marginalia magit evil-collection doom-themes doom-modeline counsel all-the-icons)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
