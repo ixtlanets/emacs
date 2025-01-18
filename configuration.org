@@ -56,7 +56,7 @@ I prefer to display relative line numbers
                   shell-mode-hook
                   treemacs-mode-hook
                   eshell-mode-hook
-  		pdf-view-mode))
+                  pdf-view-mode))
     (add-hook mode (lambda () (display-line-numbers-mode -1))))
 
 #+end_src
@@ -193,7 +193,7 @@ I personally prefer Vim keybindings, so let's use it.
     (evil-mode 1))
 
   (use-package evil-collection
-  :ensure t
+    :ensure t
     :after evil
     :config
     (evil-collection-init))
@@ -495,7 +495,33 @@ I personally prefer Vim keybindings, so let's use it.
 
 #+end_src
 
-** Dev related
+** Magit
+
+#+begin_src emacs-lisp :tangle "init.el"
+  (use-package magit
+    :ensure t
+    :bind ("C-c g" . magit-status)
+    :init
+    (setq magit-define-global-key-bindings nil)
+    (setq magit-section-visibility-indicator '("⮧"))
+    :config
+    (setq git-commit-summary-max-length 50)
+    (setq git-commit-style-convention-checks '(non-empty-second-line))
+    (setq magit-diff-refine-hunk t)
+    (setq magit-repository-directories
+          '(("~/pro" . 1))))
+#+end_src
+
+** Diff-hl
+
+#+begin_src emacs-lisp :tangle "init.el"
+  (use-package diff-hl
+    :ensure t
+    :config
+    (global-diff-hl-mode)
+    )
+#+end_src
+* Dev related
 *** Nix mode
 #+begin_src emacs-lisp :tangle "init.el"
   (use-package nix-mode
@@ -513,22 +539,6 @@ I personally prefer Vim keybindings, so let's use it.
     (treesit-auto-add-to-auto-mode-alist 'all)
     (global-treesit-auto-mode))
 
-#+end_src
-** Magit
-
-#+begin_src emacs-lisp :tangle "init.el"
-  (use-package magit
-    :ensure t
-    :bind ("C-c g" . magit-status)
-    :init
-    (setq magit-define-global-key-bindings nil)
-    (setq magit-section-visibility-indicator '("⮧"))
-    :config
-    (setq git-commit-summary-max-length 50)
-    (setq git-commit-style-convention-checks '(non-empty-second-line))
-    (setq magit-diff-refine-hunk t)
-    (setq magit-repository-directories
-          '(("~/pro" . 1))))
 #+end_src
 
 * Password store

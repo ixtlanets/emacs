@@ -57,7 +57,7 @@
   (evil-mode 1))
 
 (use-package evil-collection
-:ensure t
+  :ensure t
   :after evil
   :config
   (evil-collection-init))
@@ -329,18 +329,6 @@
 
   (advice-add #'project-switch-project :after #'prot-common-clear-minibuffer-message))
 
-(use-package nix-mode
-  :ensure t
-  :mode "\\.nix\\'")
-
-(use-package treesit-auto
-  :ensure t
-  :custom
-  (treesit-auto-install 'prompt)
-  :config
-  (treesit-auto-add-to-auto-mode-alist 'all)
-  (global-treesit-auto-mode))
-
 (use-package magit
   :ensure t
   :bind ("C-c g" . magit-status)
@@ -353,6 +341,27 @@
   (setq magit-diff-refine-hunk t)
   (setq magit-repository-directories
         '(("~/pro" . 1))))
+
+(use-package diff-hl
+  :ensure t
+  :config
+  (global-diff-hl-mode)
+  )
+
+(use-package nix-mode
+  :ensure t
+  :mode "\\.nix\\'")
+
+(use-package treesit-auto
+  :ensure t
+  :custom
+  (treesit-auto-install 'prompt)
+  :config
+  (treesit-auto-add-to-auto-mode-alist 'all)
+  (global-treesit-auto-mode))
+
+(use-package vterm
+  :ensure t)
 
 (use-package password-store
   :ensure t
@@ -369,7 +378,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(org-bullets which-key vertico treesit-auto pass nix-mode marginalia magit evil-collection doom-themes doom-modeline counsel all-the-icons)))
+   '(vterm which-key vertico treesit-auto pass org-bullets nix-mode marginalia magit evil-collection doom-themes doom-modeline diff-hl counsel all-the-icons)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
